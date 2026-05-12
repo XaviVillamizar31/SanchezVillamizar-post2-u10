@@ -60,4 +60,22 @@ class TareaServiceTest {
         assertThrows(EntityNotFoundException.class,
                 () -> service.buscarPorId(99L));
     }
+
+    @Test
+    void completar_tareaExistente_marcaComoCompletada() {
+
+        Tarea t = new Tarea();
+        t.setId(1L);
+        t.setTitulo("Prueba");
+        t.setCompletada(false);
+
+        when(repo.findById(1L)).thenReturn(Optional.of(t));
+        when(repo.save(any())).thenReturn(t);
+
+        Tarea resultado = service.completar(1L);
+
+        assertThat(resultado.isCompletada()).isTrue();
+
+        verify(repo).save(t);
+    }
 }

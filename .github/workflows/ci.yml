@@ -1,0 +1,49 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+
+  build-and-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Dar permisos a Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Ejecutar pruebas Maven
+        run: ./mvnw test
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar Newman
+        run: npm install -g newman
+
+      - name: Ejecutar coleccion Postman
+        run: |
+          ./mvnw spring-boot:run &
+          sleep 25
+          newman run postman/tareas-api.postman_collection.json

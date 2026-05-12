@@ -5,29 +5,32 @@ on: [push, pull_request]
 jobs:
   api-test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+    steps:
+      - name: Checkout del codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Compilar proyecto
+      - name: Compilar el proyecto
         run: mvn -B package -DskipTests
 
-      - name: Iniciar aplicacion
+      - name: Iniciar la aplicacion en segundo plano
         run: java -jar target/*.jar &
 
-      - name: Esperar que la app responda
+      - name: Esperar que la aplicacion responda
         run: |
           for i in {1..15}; do
-            curl -sf http://localhost:8080/api/tareas && break
+            curl -sf http://localhost:8081/api/tareas && break
             sleep 2
           done
 
       - name: Instalar Newman
         run: npm install -g newman
 
-      - name: Ejecutar pruebas Newman
-        run: newman run postman/ColeccionToDo.json --environment postman/env-ci.json
+      - name: Ejecutar coleccion con Newman
+        run: newman run postman/tareas-api.postman_collection.json --environment postman/env-ci.json

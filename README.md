@@ -155,6 +155,7 @@ Ve a la pestaña **Actions** del repositorio en GitHub. Cada ejecución muestra 
 <img width="1920" height="1032" alt="PostmanPOST" src="https://github.com/user-attachments/assets/ba9b98fb-4e71-479a-8ae9-3010a84361f6" />
 
 | `evidencia/github-actions-verde.png` | GitHub Actions con check verde |
+<img width="1364" height="476" alt="image" src="https://github.com/user-attachments/assets/a7ab11f3-101b-4947-84c8-41062ea07b00" />
 
 
 

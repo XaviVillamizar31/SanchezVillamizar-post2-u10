@@ -1,33 +1,49 @@
-name: API Tests con Newman
+name: CI Pipeline
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
-  api-test:
+
+  build-and-test:
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
         with:
-          java-version: "17"
-          distribution: "temurin"
+          distribution: temurin
+          java-version: 17
 
-      - name: Compilar proyecto
-        run: mvn -B package -DskipTests
+      - name: Dar permisos a Maven Wrapper
+        run: chmod +x mvnw
 
-      - name: Iniciar aplicacion
-        run: java -jar target/*.jar &
+      - name: Ejecutar pruebas Maven
+        run: ./mvnw test
 
-      - name: Esperar que la app responda
-        run: |
-          for i in {1..15}; do
-            curl -sf http://localhost:8080/api/tareas && break
-            sleep 2
-          done
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Instalar Newman
         run: npm install -g newman
 
-      - name: Ejecutar pruebas Newman
-        run: newman run postman/ColeccionToDo.json --environment postman/env-ci.json
+      - name: Ejecutar coleccion Postman
+        run: |
+          ./mvnw spring-boot:run &
+          sleep 25
+          newman run postman/tareas-api.postman_collection.json

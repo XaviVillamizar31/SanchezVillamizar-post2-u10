@@ -1,0 +1,11 @@
+{
+  "name": "ToDoApp-CI",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
